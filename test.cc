@@ -1,0 +1,79 @@
+#include "cache3.cc"
+#include <iostream>
+
+using namespace std;
+
+Cache::index_type space_used_test(Cache* c) {
+	return c->space_used();
+}
+
+void set_test(Cache* c, Cache::key_type key, Cache::val_type val, Cache::index_type size) {
+	c->set(key, val, size);
+}
+
+Cache::val_type get_test(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
+	return c->get(key, val_size);
+}
+
+void del_test(Cache* c, Cache::key_type key) {
+	c->del(key);
+}
+
+
+
+
+
+int main() {
+	// initialize Cache obj 'c'
+	Cache* c = new Cache(2);
+
+	// test set
+	int x = 21;
+	set_test(c, "key", &x, space_used_test(c));
+
+	// test space_used
+	cout << space_used_test(c) << '\n';
+
+	// test get present element
+	Cache::index_type size = space_used_test(c);
+	Cache::val_type val_addr = get_test(c, "key", size);
+	cout << val_addr << '\n';
+
+	// test set-overwrite
+	x = 16;
+	set_test(c, "key", &x, space_used_test(c));
+	// see if it overwrote
+	size = space_used_test(c);
+	val_addr = get_test(c, "key", size);
+	cout << val_addr << '\n';
+	//size should still be 1
+	cout << space_used_test(c) << '\n';
+
+	//test get an absent element
+	val_addr = get_test(c, "keyAbsent", size);
+	cout << val_addr << '\n';
+
+	//test del
+	del_test(c, "key");
+	//see if del worked
+	size = space_used_test(c);
+	val_addr = get_test(c, "key", size);
+	cout << val_addr << '\n';
+	//ensure memused is updated
+	cout << space_used_test(c) << '\n';
+
+	//test evict (add 3 el.s, check that 1 gets evicted)
+	x=17;
+	set_test(c, "key2", &x, space_used_test(c));
+	int y = 18;
+	set_test(c, "key3", &y, space_used_test(c));
+	int z = 19;
+	set_test(c, "key4", &z, space_used_test(c));
+	// size should be 2 not 3
+	cout << space_used_test(c) << '\n';
+
+
+
+
+}
+
