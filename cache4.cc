@@ -2,30 +2,23 @@
 #include <string.h>
 #include "cache.hh"
 #include <unordered_map>
+#include <vector>
 
 struct Cache::Impl {
 
 
-	/*std::unordered_map<std::string, void*, hash_type> hashtable_(0, hasher_); 
-	hash_type hasher; [hasher is a functor]
 
-	hash_vale = hasher();
-
-
-	std::hash<std::string> h; [is default hasher by unordered map]
-
-	h();
-
-
-
-	*/
 	index_type maxmem_;
 	evictor_type evictor_;
 	hash_func hasher_;
 	index_type memused_;
+
 	std::unordered_map<std::string, void*, hash_func> hashtable_;
 
-	//
+	// eviction queue
+	std::vector<std::string> eviction_queue_; 
+
+
 	Impl(index_type maxmem, evictor_type evictor, hash_func hasher)
 	: 
 	maxmem_(maxmem), evictor_(evictor), hasher_(hasher), memused_(0), hashtable_(0 , hasher_)
@@ -39,13 +32,14 @@ struct Cache::Impl {
 
 	void set(key_type key, val_type val, index_type size) {
 		if(memused_ >= maxmem_) {
-			hashtable_.erase(hashtable_.begin());
+			evictor_();
 			memused_ -= 1;
 		}
 		void* newval = new char[size];
 		memcpy(newval, val, size);
 		if(hashtable_.find(key)!=hashtable_.end()) {
 			memused_ -= 1;
+			eviction_queue_.push_back(key);
 		}
 		hashtable_[key] = newval;
 		memused_ += 1;
