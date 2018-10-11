@@ -31,6 +31,7 @@ struct Cache::Impl {
 	maxmem_(maxmem), evictor_(evictor), hasher_(hasher), memused_(0), hashtable_(0 , hasher_)
 
 	{
+		hashtable_.max_load_factor(0.5);
     }
 
 
