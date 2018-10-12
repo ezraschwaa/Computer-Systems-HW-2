@@ -132,3 +132,4 @@ void Cache::del(key_type key) {
 Cache::index_type Cache::space_used() const {
 	return pImpl_->space_used();
 }
+
