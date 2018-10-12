@@ -1,5 +1,7 @@
 #include "cache4.cc"
 #include <iostream>
+#include <vector>
+#include <string>
 
 using namespace std;
 
@@ -22,6 +24,22 @@ void del_test(Cache* c, Cache::key_type key) {
 int hasher(std::string) {
 	return 0;
 }
+
+class FIFOEvictor {
+private:
+	// eviction queue
+	std::vector<std::string> eviction_queue;
+
+public:
+	void add_element(Cache::key_type key) {
+		this->eviction_queue.push_back(key);
+	}
+
+	Cache::key_type operator()() {
+		return this->eviction_queue.back();
+	}
+
+};
 
 
 
@@ -77,6 +95,7 @@ int main() {
 	set_test(c, "key2", &x, space_used_test(c));
 	int y = 18;
 	set_test(c, "key3", &y, space_used_test(c));
+	cout << "\n inserting 3rd element...\n";
 	int z = 19;
 	set_test(c, "key4", &z, space_used_test(c));
 	// size should be 2 not 3
@@ -84,7 +103,8 @@ int main() {
 	cout << space_used_test(c) << '\n';
 
 
-	cout << "creating Cache w max load factor 2 and custom evictor/hasher...\n";
+	cout << "\ncreating Cache w max load factor 2 and custom evictor/hasher...\n";
+	//Cache::evictor_type FIFOEvictor_inst;
 	Cache* customCache = new Cache(2, [](){ return 0; }, hasher);
 
 	cout << "inserting 3 el.s (1 should get evicted)\n";
@@ -92,6 +112,7 @@ int main() {
 	set_test(customCache, "ckey1", &x, space_used_test(c));
 	y = 32;
 	set_test(customCache, "ckey2", &y, space_used_test(c));
+	cout << "\n inserting 3rd element...\n";
 	z = 33;
 	set_test(customCache, "ckey3", &z, space_used_test(c));
 

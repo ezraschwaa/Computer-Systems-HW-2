@@ -3,6 +3,10 @@
 #include "cache.hh"
 #include <unordered_map>
 #include <vector>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
 
 struct Cache::Impl {
 
@@ -32,7 +36,9 @@ struct Cache::Impl {
 
 	void set(key_type key, val_type val, index_type size) {
 		if(memused_ >= maxmem_) {
-			evictor_();
+			hashtable_.erase(hashtable_.begin());
+			eviction_queue_.erase(std::remove(eviction_queue_.begin(), eviction_queue_.end(), eviction_queue_[0]), eviction_queue_.end());
+			// v.erase( std::remove( v.begin(), v.end(), 5 ), v.end() );
 			memused_ -= 1;
 		}
 		void* newval = new char[size];
