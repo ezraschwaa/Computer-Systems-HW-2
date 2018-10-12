@@ -8,6 +8,36 @@
 
 using namespace std;
 
+
+class FIFOEvictor {
+private:
+	std::vector<std::string> eviction_queue_;
+public:
+	string operator()() {
+		string next_evict;
+		if(this->eviction_queue_.size()>0) {
+			next_evict = this->eviction_queue_[0];
+			// erase-remove - v.erase( std::remove( v.begin(), v.end(), 5 ), v.end() );
+			this->remove(next_evict);
+		} else {
+			cout << "nothing to evict";
+		}
+		return next_evict;
+	}
+
+	void add(string key) {
+		this->eviction_queue_.push_back(key);
+	}
+
+	void remove(string key) {
+		this->eviction_queue_.erase(std::remove(this->eviction_queue_.begin(), this->eviction_queue_.end(), key), this->eviction_queue_.end());
+	}
+
+	FIFOEvictor();
+};
+
+
+
 struct Cache::Impl {
 
 
@@ -16,19 +46,18 @@ struct Cache::Impl {
 	evictor_type evictor_;
 	hash_func hasher_;
 	index_type memused_;
+	FIFOEvictor FIFO_;
 
 	std::unordered_map<std::string, void*, hash_func> hashtable_;
-
-	// eviction queue
-	std::vector<std::string> eviction_queue_; 
 
 
 	Impl(index_type maxmem, evictor_type evictor, hash_func hasher)
 	: 
-	maxmem_(maxmem), evictor_(evictor), hasher_(hasher), memused_(0), hashtable_(0 , hasher_)
+	maxmem_(maxmem), evictor_(evictor_), hasher_(hasher), memused_(0), hashtable_(0 , hasher_)
 
 	{
 		hashtable_.max_load_factor(0.5);
+		FIFO_ = FIFOEvictor();
     }
 
 
@@ -36,16 +65,15 @@ struct Cache::Impl {
 
 	void set(key_type key, val_type val, index_type size) {
 		if(memused_ >= maxmem_) {
-			hashtable_.erase(hashtable_.begin());
-			eviction_queue_.erase(std::remove(eviction_queue_.begin(), eviction_queue_.end(), eviction_queue_[0]), eviction_queue_.end());
-			// v.erase( std::remove( v.begin(), v.end(), 5 ), v.end() );
+			key_type next_evict = FIFO_();
+			hashtable_.erase(next_evict);
 			memused_ -= 1;
 		}
 		void* newval = new char[size];
 		memcpy(newval, val, size);
 		if(hashtable_.find(key)!=hashtable_.end()) {
 			memused_ -= 1;
-			eviction_queue_.push_back(key);
+			FIFO_.add(key);
 		}
 		hashtable_[key] = newval;
 		memused_ += 1;
@@ -64,6 +92,7 @@ struct Cache::Impl {
 
 	void del(key_type key) {
 		hashtable_.erase(key);
+		FIFO_.remove(key);
 		memused_ -= 1;
 	}
 

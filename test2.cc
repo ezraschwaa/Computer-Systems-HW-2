@@ -24,7 +24,7 @@ void del_test(Cache* c, Cache::key_type key) {
 int hasher(std::string) {
 	return 0;
 }
-
+/*
 class FIFOEvictor {
 private:
 	// eviction queue
@@ -39,7 +39,7 @@ public:
 		return this->eviction_queue.back();
 	}
 
-};
+};*/
 
 
 
@@ -104,7 +104,6 @@ int main() {
 
 
 	cout << "\ncreating Cache w max load factor 2 and custom evictor/hasher...\n";
-	//Cache::evictor_type FIFOEvictor_inst;
 	Cache* customCache = new Cache(2, [](){ return 0; }, hasher);
 
 	cout << "inserting 3 el.s (1 should get evicted)\n";
@@ -118,8 +117,6 @@ int main() {
 
 	cout << "new length is: ";
 	cout << space_used_test(customCache) << '\n';
-
-
 
 }
 
