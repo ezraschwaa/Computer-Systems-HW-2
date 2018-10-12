@@ -9,7 +9,7 @@
 using namespace std;
 
 
-class FIFOEvictor {
+class FifoEvictor {
 private:
 	std::vector<std::string> eviction_queue_;
 public:
@@ -17,10 +17,9 @@ public:
 		string next_evict;
 		if(this->eviction_queue_.size()>0) {
 			next_evict = this->eviction_queue_[0];
-			// erase-remove - v.erase( std::remove( v.begin(), v.end(), 5 ), v.end() );
 			this->remove(next_evict);
 		} else {
-			cout << "nothing to evict";
+			cout << "nothing to evict\n";
 		}
 		return next_evict;
 	}
@@ -30,10 +29,9 @@ public:
 	}
 
 	void remove(string key) {
+		// erase-remove - v.erase( std::remove( v.begin(), v.end(), 5 ), v.end() );
 		this->eviction_queue_.erase(std::remove(this->eviction_queue_.begin(), this->eviction_queue_.end(), key), this->eviction_queue_.end());
 	}
-
-	FIFOEvictor();
 };
 
 
@@ -46,18 +44,17 @@ struct Cache::Impl {
 	evictor_type evictor_;
 	hash_func hasher_;
 	index_type memused_;
-	FIFOEvictor FIFO_;
+	FifoEvictor FIFO_;
 
 	std::unordered_map<std::string, void*, hash_func> hashtable_;
 
 
 	Impl(index_type maxmem, evictor_type evictor, hash_func hasher)
 	: 
-	maxmem_(maxmem), evictor_(evictor_), hasher_(hasher), memused_(0), hashtable_(0 , hasher_)
+	maxmem_(maxmem), evictor_(evictor_), hasher_(hasher), memused_(0), hashtable_(0 , hasher_), FIFO_()
 
 	{
 		hashtable_.max_load_factor(0.5);
-		FIFO_ = FIFOEvictor();
     }
 
 
@@ -82,7 +79,6 @@ struct Cache::Impl {
 
 	val_type get(key_type key, index_type& val_size) const {
 		if(hashtable_.find(key)!=hashtable_.end()) {
-			//const val_type val = hashtable_[key]
 			return hashtable_.find(key)->second;
 
 		} else {

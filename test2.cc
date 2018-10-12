@@ -24,22 +24,6 @@ void del_test(Cache* c, Cache::key_type key) {
 int hasher(std::string) {
 	return 0;
 }
-/*
-class FIFOEvictor {
-private:
-	// eviction queue
-	std::vector<std::string> eviction_queue;
-
-public:
-	void add_element(Cache::key_type key) {
-		this->eviction_queue.push_back(key);
-	}
-
-	Cache::key_type operator()() {
-		return this->eviction_queue.back();
-	}
-
-};*/
 
 
 
