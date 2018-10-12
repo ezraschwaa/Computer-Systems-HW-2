@@ -44,14 +44,14 @@ struct Cache::Impl {
 	evictor_type evictor_;
 	hash_func hasher_;
 	index_type memused_;
-	FifoEvictor FIFO_;
+	FifoEvictor Fifo_;
 
 	std::unordered_map<std::string, void*, hash_func> hashtable_;
 
 
 	Impl(index_type maxmem, evictor_type evictor, hash_func hasher)
 	: 
-	maxmem_(maxmem), evictor_(evictor_), hasher_(hasher), memused_(0), hashtable_(0 , hasher_), FIFO_()
+	maxmem_(maxmem), evictor_(evictor_), hasher_(hasher), memused_(0), hashtable_(0 , hasher_), Fifo_()
 
 	{
 		hashtable_.max_load_factor(0.5);
@@ -62,7 +62,7 @@ struct Cache::Impl {
 
 	void set(key_type key, val_type val, index_type size) {
 		if(memused_ >= maxmem_) {
-			key_type next_evict = FIFO_();
+			key_type next_evict = Fifo_();
 			hashtable_.erase(next_evict);
 			memused_ -= 1;
 		}
@@ -70,7 +70,7 @@ struct Cache::Impl {
 		memcpy(newval, val, size);
 		if(hashtable_.find(key)!=hashtable_.end()) {
 			memused_ -= 1;
-			FIFO_.add(key);
+			Fifo_.add(key);
 		}
 		hashtable_[key] = newval;
 		memused_ += 1;
@@ -88,7 +88,7 @@ struct Cache::Impl {
 
 	void del(key_type key) {
 		hashtable_.erase(key);
-		FIFO_.remove(key);
+		Fifo_.remove(key);
 		memused_ -= 1;
 	}
 
