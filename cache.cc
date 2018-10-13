@@ -21,6 +21,7 @@ public:
 		} else {
 			cout << this->eviction_queue_.size() << "nothing to evict\n";
 		}
+		cout << "evicting " << next_evict << "\n";
 		return next_evict;
 	}
 
@@ -64,6 +65,7 @@ struct Cache::Impl {
 		// if the key is already in the table...
 		if(hashtable_.find(key)!=hashtable_.end()) {
 			// remove it from queue (will overwrite it in cache/re-add it to queue later)
+			cout << "overwriting key: " << key << "\n";
 			Fifo_.remove(key);
 			memused_ -= 1;
 		} else if(memused_ >= maxmem_) {
@@ -86,6 +88,7 @@ struct Cache::Impl {
 			return hashtable_.find(key)->second;
 
 		} else {
+			cout << "key " << key << " is absent\n";
 			return nullptr;
 		}
 	}
