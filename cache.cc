@@ -8,7 +8,7 @@
 
 using namespace std;
 
-
+// this is a functor
 class FifoEvictor {
 private:
 	std::vector<std::string> eviction_queue_;
