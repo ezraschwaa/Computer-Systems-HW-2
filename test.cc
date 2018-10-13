@@ -58,6 +58,7 @@ int main() {
 	space_used_test(c);
 	// get present element
 	get_test(c, "key", size);
+	space_used_test(c);
 	cout << '\n';
 
 	// overwrite present element

@@ -66,6 +66,7 @@ struct Cache::Impl {
 		if(hashtable_.find(key)!=hashtable_.end()) {
 			// remove it from queue (will overwrite it in cache/re-add it to queue later)
 			cout << "overwriting key: '" << key << "'\n";
+			free(hashtable_[key]);
 			Fifo_.remove(key);
 			memused_ -= 1;
 		} else if(memused_ >= maxmem_) {
@@ -95,6 +96,7 @@ struct Cache::Impl {
 
 	void del(key_type key) {
 		if(hashtable_.find(key)!=hashtable_.end()) {
+			free(hashtable_[key]);
 			hashtable_.erase(key);
 			Fifo_.remove(key);
 			memused_ -= 1;
