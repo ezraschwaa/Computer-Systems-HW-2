@@ -86,7 +86,7 @@ int main() {
 	cout << space_used_test(c) << '\n';
 
 
-	cout << "\ncreating Cache w max load factor 2 and custom evictor/hasher...\n";
+	cout << "\ncreating Cache w max load factor 2 and custom hasher...\n";
 	Cache* customCache = new Cache(2, [](){ return 0; }, hasher);
 
 	cout << "inserting 4 el.s (2 should get evicted)\n";
