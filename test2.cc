@@ -79,28 +79,31 @@ int main() {
 	set_test(c, "key2", &x, space_used_test(c));
 	int y = 18;
 	set_test(c, "key3", &y, space_used_test(c));
-	cout << "\n inserting 3rd element...\n";
 	int z = 19;
 	set_test(c, "key4", &z, space_used_test(c));
 	// size should be 2 not 3
-	cout << "map size is: ";
+	cout << "map size should be 2: ";
 	cout << space_used_test(c) << '\n';
 
 
 	cout << "\ncreating Cache w max load factor 2 and custom evictor/hasher...\n";
 	Cache* customCache = new Cache(2, [](){ return 0; }, hasher);
 
-	cout << "inserting 3 el.s (1 should get evicted)\n";
+	cout << "inserting 4 el.s (2 should get evicted)\n";
 	x=31;
-	set_test(customCache, "ckey1", &x, space_used_test(c));
+	set_test(customCache, "ckey1", &x, space_used_test(customCache));
 	y = 32;
-	set_test(customCache, "ckey2", &y, space_used_test(c));
-	cout << "\n inserting 3rd element...\n";
+	set_test(customCache, "ckey2", &y, space_used_test(customCache));
 	z = 33;
-	set_test(customCache, "ckey3", &z, space_used_test(c));
+	set_test(customCache, "ckey3", &z, space_used_test(customCache));
+	int n = 33;
+	set_test(customCache, "ckey3", &n, space_used_test(customCache));
 
-	cout << "new length is: ";
+	cout << "map size should be 2: ";
 	cout << space_used_test(customCache) << '\n';
+
+	//cout << "looking up ckey2...\n";
+	//cout << get_test();
 
 }
 

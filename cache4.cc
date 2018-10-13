@@ -19,7 +19,7 @@ public:
 			next_evict = this->eviction_queue_[0];
 			this->remove(next_evict);
 		} else {
-			cout << "nothing to evict\n";
+			cout << this->eviction_queue_.size() << "nothing to evict\n";
 		}
 		return next_evict;
 	}
@@ -61,19 +61,23 @@ struct Cache::Impl {
     ~Impl() = default;
 
 	void set(key_type key, val_type val, index_type size) {
-		if(memused_ >= maxmem_) {
+		// if the key is already in the table...
+		if(hashtable_.find(key)!=hashtable_.end()) {
+			// remove it from queue (will overwrite it in cache/re-add it to queue later)
+			Fifo_.remove(key);
+			memused_ -= 1;
+		} else if(memused_ >= maxmem_) {
+			// pop off next_evict (also del.s it from FIFO queue)
 			key_type next_evict = Fifo_();
+			// erase it from cache
 			hashtable_.erase(next_evict);
 			memused_ -= 1;
 		}
 		void* newval = new char[size];
 		memcpy(newval, val, size);
-		if(hashtable_.find(key)!=hashtable_.end()) {
-			memused_ -= 1;
-			Fifo_.add(key);
-		}
 		hashtable_[key] = newval;
 		memused_ += 1;
+		Fifo_.add(key);
 	}
 
 
@@ -132,4 +136,3 @@ void Cache::del(key_type key) {
 Cache::index_type Cache::space_used() const {
 	return pImpl_->space_used();
 }
-
