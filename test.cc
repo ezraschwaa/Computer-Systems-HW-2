@@ -25,7 +25,7 @@ void get_test(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
 	int* data_at_val = new int[1];
 	if(value!=nullptr) {
 		memcpy(data_at_val, value, val_size+1);
-		cout << data_at_val << "->" << *data_at_val;
+		cout << *data_at_val;
 	}
 	cout << "\n";
 	free(data_at_val);
