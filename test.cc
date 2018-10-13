@@ -102,8 +102,5 @@ int main() {
 	cout << "map size should be 2: ";
 	cout << space_used_test(customCache) << '\n';
 
-	//cout << "looking up ckey2...\n";
-	//cout << get_test();
-
 }
 
