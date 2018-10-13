@@ -13,7 +13,7 @@ Cache::index_type space_used_test(Cache* c) {
 
 // sets Cache[key] = val
 void set_test(Cache* c, Cache::key_type key, int* val, Cache::index_type size) {
-	cout << "setting Cache['" << key << "'] = ptr " << val << "->" << *val << "\n";
+	cout << "setting Cache['" << key << "'] = " << *val << "\n";
 	c->set(key, val, size);
 }
 
@@ -33,7 +33,7 @@ void get_test(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
 
 // deletes Cache[key]
 void del_test(Cache* c, Cache::key_type key) {
-	cout << "deleting Cache['" << key << "']...\n";
+	cout << "deleting Cache['" << key << "']\n";
 	c->del(key);
 }
 
@@ -62,8 +62,8 @@ int main() {
 	cout << '\n';
 
 	// overwrite present element
-	int y = 16;
-	set_test(c, "key", &y, size);
+	x = 16;
+	set_test(c, "key", &x, size);
 	// see if it overwrote
 	get_test(c, "key", size);
 	//size should still be 1
@@ -87,8 +87,8 @@ int main() {
 	cout << "testing evict, adding 3 el.s to a map w max_load 2...\n";
 	x=17;
 	set_test(c, "key", &x, size);
-	y = 18;
-	set_test(c, "key1", &y, size);
+	x = 18;
+	set_test(c, "key1", &x, size);
 	x = 19;
 	set_test(c, "key2", &x, size);
 	// size should be 2 not 3
@@ -109,12 +109,12 @@ int main() {
 	cout << "inserting 4 el.s (2 should get evicted)\n";
 	x=31;
 	set_test(customCache, "ckey1", &x, size);
-	y = 32;
-	set_test(customCache, "ckey2", &y, size);
+	x = 32;
+	set_test(customCache, "ckey2", &x, size);
 	x = 33;
 	set_test(customCache, "ckey3", &x, size);
-	y = 34;
-	set_test(customCache, "ckey3", &y, size);
+	x = 34;
+	set_test(customCache, "ckey3", &x, size);
 
 	space_used_test(customCache);
 	cout << '\n';
