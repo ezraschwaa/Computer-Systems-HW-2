@@ -1,7 +1,4 @@
 #include "cache.cc"
-#include <iostream>
-#include <vector>
-#include <string>
 
 using namespace std;
 
@@ -55,10 +52,10 @@ int main() {
 
 	int x = 21;
 	set_test(c, "key", &x, size);
-	space_used_test(c);
+	assert(space_used_test(c)==1 && "space used after 1 insert should be 1");
 	// get present element
 	get_test(c, "key", size);
-	space_used_test(c);
+	assert(space_used_test(c)==1 && "'get' should not affect space used");
 	cout << '\n';
 
 	// overwrite present element
@@ -67,19 +64,19 @@ int main() {
 	// see if it overwrote
 	get_test(c, "key", size);
 	//size should still be 1
-	space_used_test(c);
+	assert(space_used_test(c)==1 && "overwrite should not affect space used");
 	cout << '\n';
 
 	//test get/del an absent element
 	get_test(c, "keyAbsent", size);
 	del_test(c, "keyAbsent");
-	space_used_test(c);
+	assert(space_used_test(c)==1 && "del.ing absent el. should not affect space used");
 
 	//test del present element
 	get_test(c, "key", size);
 	del_test(c, "key");
 	//see if del worked
-	space_used_test(c);
+	assert(space_used_test(c)==0 && "del.ing present el. should decrement space used");
 	get_test(c, "key", size);
 	
 
@@ -93,7 +90,7 @@ int main() {
 	set_test(c, "key2", &x, size);
 	// size should be 2 not 3
 	cout << "map size should be 2: ";
-	space_used_test(c);
+	assert(space_used_test(c)==2 && "Should add 3, evict 1");
 	cout << '\n';
 
 	get_test(c, "key", size);
@@ -117,7 +114,7 @@ int main() {
 	x = 34;
 	set_test(customCache, "ckey3", &x, size);
 
-	space_used_test(customCache);
+	assert(space_used_test(c)==2 && "Should add 3, evict 1, overwrite 1");
 	cout << '\n';
 
 	get_test(customCache, "ckey1", size);
