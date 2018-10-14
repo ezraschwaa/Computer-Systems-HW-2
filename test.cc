@@ -104,7 +104,7 @@ int main() {
 	Cache* customCache = new Cache(2, [](){ return 0; }, hasher);
 
 	// tests set, evict, and overwrite
-	cout << "inserting 4 el.s (2 should get evicted)\n";
+	cout << "inserting 4 el.s (1 should get evicted and 1 overwritten)\n";
 	x=31;
 	set_test(customCache, "ckey1", &x, size);
 	x = 32;
