@@ -46,7 +46,7 @@ int main() {
 	// initialize Cache obj 'c'
 	Cache* c = new Cache(2);
 
-	space_used_test(c);
+	assert(space_used_test(c)==0 && "empty cache should have no elements");
 
 	Cache::index_type size = sizeof(Cache::index_type);
 
