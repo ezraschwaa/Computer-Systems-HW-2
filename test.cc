@@ -106,6 +106,7 @@ int main() {
 	cout << "\ncreating Cache w max load factor 2 and custom hasher...\n";
 	Cache* customCache = new Cache(2, [](){ return 0; }, hasher);
 
+	// tests set, evict, and overwrite
 	cout << "inserting 4 el.s (2 should get evicted)\n";
 	x=31;
 	set_test(customCache, "ckey1", &x, size);

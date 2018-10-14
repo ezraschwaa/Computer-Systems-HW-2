@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <assert.h>
 
 using namespace std;
 
@@ -15,12 +16,10 @@ private:
 public:
 	string operator()() {
 		string next_evict;
-		if(this->eviction_queue_.size()>0) {
-			next_evict = this->eviction_queue_[0];
-			this->remove(next_evict);
-		} else {
-			cout << this->eviction_queue_.size() << "nothing to evict\n";
-		}
+		// FifoEvictor() is never called on an empty eviction_queue
+		assert(this->eviction_queue_.size()>0 && "nothing to evict\n");
+		next_evict = this->eviction_queue_[0];
+		this->remove(next_evict);
 		cout << "evicting '" << next_evict << "'\n";
 		return next_evict;
 	}
@@ -55,6 +54,7 @@ struct Cache::Impl {
 	maxmem_(maxmem), evictor_(evictor_), hasher_(hasher), memused_(0), hashtable_(0 , hasher_), Fifo_()
 
 	{
+		assert(maxmem_>0 && "Cache size must be positive");
 		hashtable_.max_load_factor(0.5);
     }
 
