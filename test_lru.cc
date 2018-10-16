@@ -1,5 +1,5 @@
 #include "cache_lru.cc"
-#include <time.h>
+//#include <time.h>
 // for rand
 
 using namespace std;
@@ -50,14 +50,16 @@ private:
 public:
 	// hashes key to int in range(0, bound)
 	uint32_t operator()(string key) {
-		return this->hasher_(key)%this->bound_;
+		int32_t hashed = this->hasher_(key)%this->bound_;
+		cout << "key: '" << key << "' hashed to: " << hashed << '\n';
+		return hashed;
 	}
 	betterHasher(int bound);
 };
 
 betterHasher::betterHasher(int bound) {
 	this->bound_ = bound;
-	srand(time(NULL));
+	//srand(time(NULL));
 }
 
 
