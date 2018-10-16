@@ -1,4 +1,6 @@
 #include "cache.cc"
+#include <time.h>
+// for rand
 
 using namespace std;
 
@@ -35,8 +37,27 @@ void del_test(Cache* c, Cache::key_type key) {
 }
 
 // simple/stupid custom hasher
-int hasher(std::string) {
+int hasher(string) {
 	return 0;
+}
+
+// this is a functor
+class betterHasher {
+private:
+	hash<string> hasher;
+	int bound_;
+
+public:
+	// hashes key to int in range(0, bound)
+	uint32_t operator()(string key) {
+		return hasher(key)%this->bound_;
+	}
+	betterHasher(int bound);
+};
+
+betterHasher::betterHasher(int bound) {
+	this->bound_ = bound;
+	srand(time(NULL));
 }
 
 
@@ -44,7 +65,12 @@ int hasher(std::string) {
 
 int main() {
 	// initialize Cache obj 'c'
-	Cache* c = new Cache(2);
+
+	betterHasher h = betterHasher(2);
+
+	Cache* c = new Cache(2, [](){ return 0; }, h);
+
+
 
 	assert(space_used_test(c)==0 && "empty cache should have no elements");
 
