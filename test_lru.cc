@@ -65,93 +65,93 @@ betterHasher::betterHasher(int bound) {
 
 int main() {
 	// initialize Cache obj 'c'
+	uint8_t cache_length = 2;
 
-	betterHasher h = betterHasher(2);
+	betterHasher myHasher = betterHasher(cache_length);
 
-	Cache* c = new Cache(2, [](){ return 0; }, h);
+	Cache* myCache = new Cache(cache_length, [](){ return 0; }, myHasher);
 
 
 
-	assert(space_used_test(c)==0 && "empty cache should have no elements");
+	assert(space_used_test(myCache)==0 && "empty cache should have no elements");
 
 	Cache::index_type size = sizeof(Cache::index_type);
 
 	int x = 21;
-	set_test(c, "key", &x, size);
-	assert(space_used_test(c)==1 && "space used after 1 insert should be 1");
+	set_test(myCache, "key", &x, size);
+	assert(space_used_test(myCache)==1 && "space used after 1 insert should be 1");
 	// get present element
-	get_test(c, "key", size);
-	assert(space_used_test(c)==1 && "'get' should not affect space used");
+	get_test(myCache, "key", size);
+	assert(space_used_test(myCache)==1 && "'get' should not affect space used");
 	cout << '\n';
 
 	// overwrite present element
 	x = 16;
-	set_test(c, "key", &x, size);
+	set_test(myCache, "key", &x, size);
 	// see if it overwrote
-	get_test(c, "key", size);
+	get_test(myCache, "key", size);
 	//size should still be 1
-	assert(space_used_test(c)==1 && "overwrite should not affect space used");
+	assert(space_used_test(myCache)==1 && "overwrite should not affect space used");
 	cout << '\n';
 
 	//test get/del an absent element
-	get_test(c, "keyAbsent", size);
-	del_test(c, "keyAbsent");
-	assert(space_used_test(c)==1 && "del.ing absent el. should not affect space used");
+	get_test(myCache, "keyAbsent", size);
+	del_test(myCache, "keyAbsent");
+	assert(space_used_test(myCache)==1 && "del.ing absent el. should not affect space used");
 
 	//test del present element
-	get_test(c, "key", size);
-	del_test(c, "key");
+	get_test(myCache, "key", size);
+	del_test(myCache, "key");
 	//see if del worked
-	assert(space_used_test(c)==0 && "del.ing present el. should decrement space used");
-	get_test(c, "key", size);
+	assert(space_used_test(myCache)==0 && "del.ing present el. should decrement space used");
+	get_test(myCache, "key", size);
 	
 
-	//test evict (add 3 el.s, check that 1 gets evicted)
-	cout << "testing evict, adding 3 el.s to a map w max_load 2...\n";
+	//test evict (add 3 el.s, check that 1 gets evicted) [all same size => tests FIFO-evict]
+	cout << "testing Fifo-evict, adding 3 same-sized el.s to a map w max_load 2...\n";
 	x=17;
-	set_test(c, "key", &x, size);
+	set_test(myCache, "key", &x, size);
 	x = 18;
-	set_test(c, "key1", &x, size);
+	set_test(myCache, "key1", &x, size);
 	cout << "should evict 'key' next since all same size vals => FIFO\n";
 	x = 19;
-	set_test(c, "key2", &x, size);
+	set_test(myCache, "key2", &x, size);
 	// size should be 2 not 3
 	cout << "map size should be 2: ";
-	assert(space_used_test(c)==2 && "Should add 3, evict 1");
+	assert(space_used_test(myCache)==2 && "Should add 3, evict 1");
 	cout << '\n';
 
-	get_test(c, "key", size);
-	get_test(c, "key1", size);
-	get_test(c, "key2", size);	
+	get_test(myCache, "key", size);
+	get_test(myCache, "key1", size);
+	get_test(myCache, "key2", size);
+	cout << '\n';
+	del_test(myCache, "key1");
+	del_test(myCache, "key2");	
+	cout << '\n';
 
-	free(c);
-
-
-	cout << "\ncreating Cache w max load factor 2\n";
-	Cache* customCache = new Cache(2, [](){ return 0; }, h);
-
-	// tests set, evict, and overwrite
-	cout << "inserting 4 el.s in ascending size (1 should get evicted and 1 overwritten)\n";
+	// tests set, LRU evict, and overwrite (including overwriting dif. size)
+	cout << "testing LRU-evict, overwrite: inserting 4 el.s in ascending size\n";
+	cout << "(1 should get evicted and 1 overwritten)\n";
 	x=31;
-	set_test(customCache, "ckey1", &x, size);
+	set_test(myCache, "ckey1", &x, size);
 	x = 32;
-	set_test(customCache, "ckey2", &x, size+1);
+	set_test(myCache, "ckey2", &x, size+1);
 	x = 33;
 
 	cout << "'ckey2' should get evicted next bc it's biggest\n";
-	set_test(customCache, "ckey3", &x, size+2);
+	set_test(myCache, "ckey3", &x, size+2);
 	x = 34;
-	// test overwriting with different size
-	set_test(customCache, "ckey3", &x, size+3);
+	cout << "overwriting 'ckey3' with dif. sized value\n";
+	set_test(myCache, "ckey3", &x, size+3);
 
-	assert(space_used_test(c)==2 && "Should add 3, evict 1, overwrite 1");
+	assert(space_used_test(myCache)==2 && "Should add 3, evict 1, overwrite 1");
 	cout << '\n';
 
-	get_test(customCache, "ckey1", size);
-	get_test(customCache, "ckey2", size);
-	get_test(customCache, "ckey3", size);
+	get_test(myCache, "ckey1", size);
+	get_test(myCache, "ckey2", size);
+	get_test(myCache, "ckey3", size);
 
-	free(customCache);
+	free(myCache);
 
 }
 
