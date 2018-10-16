@@ -42,7 +42,6 @@ public:
 
 
 	void remove(string key) {
-		//node_matches_key node_matches = node_matches_key(key);
 		// erase-remove - v.erase( std::remove( v.begin(), v.end(), 5 ), v.end() );
 		this->eviction_queue_.erase(std::remove_if(this->eviction_queue_.begin(), this->eviction_queue_.end(), [key](tuple<uint32_t, string> node){return get<1>(node)==key;}), this->eviction_queue_.end());
 	}

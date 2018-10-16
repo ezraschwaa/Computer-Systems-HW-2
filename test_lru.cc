@@ -1,6 +1,4 @@
 #include "cache_lru.cc"
-//#include <time.h>
-// for rand
 
 using namespace std;
 
@@ -50,16 +48,13 @@ private:
 public:
 	// hashes key to int in range(0, bound)
 	uint32_t operator()(string key) {
-		int32_t hashed = this->hasher_(key)%this->bound_;
-		cout << "key: '" << key << "' hashed to: " << hashed << '\n';
-		return hashed;
+		return this->hasher_(key)%this->bound_;
 	}
 	betterHasher(int bound);
 };
 
 betterHasher::betterHasher(int bound) {
 	this->bound_ = bound;
-	//srand(time(NULL));
 }
 
 
@@ -71,10 +66,13 @@ int main() {
 
 	betterHasher myHasher = betterHasher(cache_length);
 
+	//test hasher
+	cout << "'key' hashes to " << myHasher("key") << '\n';
+	cout << "'ckey3' hashes to " << myHasher("ckey3") << "\n\n";
+
+
 	Cache* myCache = new Cache(cache_length, [](){ return 0; }, myHasher);
-
-
-
+	
 	assert(space_used_test(myCache)==0 && "empty cache should have no elements");
 
 	Cache::index_type size = sizeof(Cache::index_type);
