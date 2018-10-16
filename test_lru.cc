@@ -64,15 +64,19 @@ int main() {
 	// initialize Cache obj 'c'
 	uint8_t cache_length = 2;
 
+	cout << "Initializing myHasher with bound 2 [val.s should hash to 1 or 0]...\n";
+
 	betterHasher myHasher = betterHasher(cache_length);
 
 	//test hasher
 	cout << "'key' hashes to " << myHasher("key") << '\n';
 	cout << "'ckey3' hashes to " << myHasher("ckey3") << "\n\n";
 
+	cout << "Creating cache using myHasher w maxmem 2...\n";
+
 
 	Cache* myCache = new Cache(cache_length, [](){ return 0; }, myHasher);
-	
+
 	assert(space_used_test(myCache)==0 && "empty cache should have no elements");
 
 	Cache::index_type size = sizeof(Cache::index_type);
