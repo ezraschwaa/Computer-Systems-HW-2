@@ -44,13 +44,13 @@ int hasher(string) {
 // this is a functor
 class betterHasher {
 private:
-	hash<string> hasher;
+	hash<string> hasher_;
 	int bound_;
 
 public:
 	// hashes key to int in range(0, bound)
 	uint32_t operator()(string key) {
-		return hasher(key)%this->bound_;
+		return this->hasher_(key)%this->bound_;
 	}
 	betterHasher(int bound);
 };
