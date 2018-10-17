@@ -14,6 +14,7 @@ using namespace std;
 class LruEvictor {
 private:
 	vector<tuple<uint32_t, string> > eviction_queue_;
+	// eviction_queue_ holds nodes of form (val-size, key)
 public:
 	string operator()() {
 		tuple<uint32_t,string> next_evict;
