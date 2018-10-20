@@ -61,7 +61,7 @@ betterHasher::betterHasher(int bound) {
 
 
 int main() {
-	// initialize Cache obj 'c'
+	// initialize Cache obj
 	uint8_t cache_length = 2;
 
 	cout << "Initializing myHasher with bound 2 [val.s should hash to 1 or 0]...\n";
