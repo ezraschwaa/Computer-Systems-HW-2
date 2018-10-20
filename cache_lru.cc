@@ -29,7 +29,7 @@ public:
 	void add(uint32_t elt_size, string key) {
 		uint32_t evq_size = this->eviction_queue_.size();
 		tuple<uint32_t, string> node = make_tuple(elt_size, key);
-		int i = 0;
+		uint32_t i = 0;
 		for(;i<evq_size; i++) {
 			uint32_t i_size = get<0>(this->eviction_queue_[i]);
 			if(elt_size>i_size) {

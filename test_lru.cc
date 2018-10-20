@@ -61,8 +61,8 @@ betterHasher::betterHasher(int bound) {
 
 
 int main() {
-	// initialize Cache obj
-	uint8_t cache_length = 2;
+	// initialize Cache obj 'cache_length'
+	uint32_t cache_length = 2;
 
 	cout << "Initializing myHasher with bound 2 [val.s should hash to 1 or 0]...\n";
 
@@ -79,7 +79,8 @@ int main() {
 
 	assert(space_used_test(myCache)==0 && "empty cache should have no elements");
 
-	Cache::index_type size = sizeof(Cache::index_type);
+	// size is size of vals (which are ints)
+	uint32_t size = sizeof(uint32_t);
 
 	int x = 21;
 	set_test(myCache, "key", &x, size);
