@@ -22,9 +22,8 @@ void get_test(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
 	int* data_at_val = new int[1];
 	if(value!=nullptr) {
 		memcpy(data_at_val, value, val_size);
-		cout << *data_at_val;
+		cout << *data_at_val << '\n';
 	}
-	cout << "\n";
 	free(data_at_val);
 }
 
@@ -104,6 +103,7 @@ int main() {
 	del_test(myCache, "keyAbsent");
 	assert(space_used_test(myCache)==1 && "del.ing absent el. should not affect space used");
 
+	cout << '\n';
 	//test del present element
 	get_test(myCache, "key", size);
 	del_test(myCache, "key");
@@ -113,7 +113,7 @@ int main() {
 	
 
 	//test evict (add 3 el.s, check that 1 gets evicted) [all same size => tests FIFO-evict]
-	cout << "testing Fifo-evict, adding 3 same-sized el.s to a map w max_load 2...\n";
+	cout << "\ntesting Fifo-evict, adding 3 same-sized el.s to a map w max_load 2...\n";
 	x=17;
 	set_test(myCache, "key", &x, size);
 	x = 18;
