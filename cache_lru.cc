@@ -55,7 +55,7 @@ public:
 				return get<0>(node);
 			}
 		}
-		cout << key << " not found\n";
+		assert(false && "%s.key not found\n");
 		return 0;
 	}
 };
