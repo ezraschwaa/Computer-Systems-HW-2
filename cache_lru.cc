@@ -56,7 +56,7 @@ public:
 			}
 		}
 		cout << key << " not found\n";
-		return -1;
+		return 0;
 	}
 };
 
