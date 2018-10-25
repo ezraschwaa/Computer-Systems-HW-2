@@ -16,7 +16,7 @@ private:
 	vector<tuple<uint32_t, string> > eviction_queue_;
 	// eviction_queue_ holds nodes of form (val-size, key)
 public:
-	// returns next tuple(key-size, key) to evict
+	// returns next key to evict
 	tuple<uint32_t,string> operator()() {
 		tuple<uint32_t,string> next_evict;
 		// LruEvictor() is never called on an empty eviction_queue
@@ -45,7 +45,7 @@ public:
 
 
 	void remove(string key) {
-		// erase-remove - v.erase( std::remove( v.begin(), v.end(), 5 ), v.end() );
+		// erase-remove_if idiom
 		this->eviction_queue_.erase(std::remove_if(this->eviction_queue_.begin(), this->eviction_queue_.end(), [key](tuple<uint32_t, string> node){return get<1>(node)==key;}), this->eviction_queue_.end());
 	}
 
@@ -65,7 +65,7 @@ public:
 
 
 // These funcs are necessary bc mandatory interface overwrites
-//		``get" func required for tuple element access
+//		``get" func required for tuple element access in Cache class
 string get_tuple_key(tuple<uint32_t, string> node) {
 	return get<1>(node);
 }
@@ -109,7 +109,7 @@ struct Cache::Impl {
 			memused_ -= Lru_.getsize(key);
 			Lru_.remove(key);
 		} else if(memused_ >= maxmem_) {
-			// get next_evict
+			// get next_evict (also del.s it from ev. q.)
 			tuple<uint32_t, string> next_evict = Lru_();
 			string next_evict_key = get_tuple_key(next_evict);
 			uint32_t next_evict_size = get_tuple_size(next_evict);
