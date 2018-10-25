@@ -85,7 +85,7 @@ int main() {
 
 	int x = 21;
 	set_test(myCache, "key", &x, size);
-	assert(space_used_test(myCache)==size && "space used after 1 insert should be %d.size");
+	assert(space_used_test(myCache)==size && "space used after 1 insert should be 4 bytes");
 	// get present element
 	get_test(myCache, "key", size);
 	assert(space_used_test(myCache)==size && "'get' should not affect space used");

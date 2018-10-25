@@ -55,7 +55,7 @@ public:
 				return get<0>(node);
 			}
 		}
-		assert(false && "%s.key not found\n");
+		assert(false && "key not found\n");
 		return 0;
 	}
 };
