@@ -17,8 +17,6 @@ private:
 	// eviction_queue_ holds nodes of form (val-size, key)
 public:
 	// returns next key to evict
-	// [it would return a tuple of (key, size) but the mandatory interface
-	//		overwrites the ``get" operation required to access tuple elements in Cache class]
 	tuple<uint32_t,string> operator()() {
 		tuple<uint32_t,string> next_evict;
 		// LruEvictor() is never called on an empty eviction_queue
