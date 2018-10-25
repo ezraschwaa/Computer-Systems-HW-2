@@ -16,7 +16,7 @@ private:
 	vector<tuple<uint32_t, string> > eviction_queue_;
 	// eviction_queue_ holds nodes of form (val-size, key)
 public:
-	// returns next key to evict
+	// returns next tuple(key-size, key) to evict
 	tuple<uint32_t,string> operator()() {
 		tuple<uint32_t,string> next_evict;
 		// LruEvictor() is never called on an empty eviction_queue
