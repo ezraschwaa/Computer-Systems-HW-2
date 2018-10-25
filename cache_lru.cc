@@ -16,12 +16,12 @@ private:
 	vector<tuple<uint32_t, string> > eviction_queue_;
 	// eviction_queue_ holds nodes of form (val-size, key)
 public:
+	// returns next key to evict
 	string operator()() {
 		tuple<uint32_t,string> next_evict;
 		// LruEvictor() is never called on an empty eviction_queue
 		assert(this->eviction_queue_.size()>0 && "nothing to evict\n");
 		next_evict = this->eviction_queue_[0];
-		this->remove(get<1>(next_evict));
 		cout << "evicting '" << get<1>(next_evict) << "'\n";
 		return get<1>(next_evict);
 	}
@@ -45,6 +45,18 @@ public:
 	void remove(string key) {
 		// erase-remove - v.erase( std::remove( v.begin(), v.end(), 5 ), v.end() );
 		this->eviction_queue_.erase(std::remove_if(this->eviction_queue_.begin(), this->eviction_queue_.end(), [key](tuple<uint32_t, string> node){return get<1>(node)==key;}), this->eviction_queue_.end());
+	}
+
+	uint32_t getsize(string key) {
+		uint32_t i = 0;
+		for(;i<this->eviction_queue_.size(); i++) {
+			tuple<uint32_t, string> node = this->eviction_queue_[i];
+			if(get<1>(node) == key) {
+				return get<0>(node);
+			}
+		}
+		cout << key << " not found\n";
+		return -1;
 	}
 };
 
@@ -81,19 +93,20 @@ struct Cache::Impl {
 			// remove it from queue (will overwrite it in cache/re-add it to queue later)
 			cout << "overwriting key: '" << key << "'\n";
 			free(hashtable_[key]);
+			memused_ -= Lru_.getsize(key);
 			Lru_.remove(key);
-			memused_ -= 1;
 		} else if(memused_ >= maxmem_) {
-			// pop off next_evict (also del.s it from Lru queue)
-			key_type next_evict = Lru_();
-			// erase it from cache
+			// get next_evict
+			string next_evict = Lru_();
+			// update memused
+			memused_ -= Lru_.getsize(next_evict);
+			Lru_.remove(next_evict);
 			hashtable_.erase(next_evict);
-			memused_ -= 1;
 		}
 		void* newval = new char[size];
 		memcpy(newval, val, size);
 		hashtable_[key] = newval;
-		memused_ += 1;
+		memused_ += size;
 		Lru_.add(size, key);
 	}
 
@@ -112,8 +125,8 @@ struct Cache::Impl {
 		if(hashtable_.find(key)!=hashtable_.end()) {
 			free(hashtable_[key]);
 			hashtable_.erase(key);
+			memused_ -= Lru_.getsize(key);
 			Lru_.remove(key);
-			memused_ -= 1;
 		} else {
 			cout << "key '" << key << "' is already absent\n";
 		}
