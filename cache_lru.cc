@@ -17,13 +17,17 @@ private:
 	// eviction_queue_ holds nodes of form (val-size, key)
 public:
 	// returns next key to evict
-	string operator()() {
+	// [it would return a tuple of (key, size) but the mandatory interface
+	//		overwrites the ``get" operation required to access tuple elements in Cache class]
+	tuple<uint32_t,string> operator()() {
 		tuple<uint32_t,string> next_evict;
 		// LruEvictor() is never called on an empty eviction_queue
 		assert(this->eviction_queue_.size()>0 && "nothing to evict\n");
 		next_evict = this->eviction_queue_[0];
-		cout << "evicting '" << get<1>(next_evict) << "'\n";
-		return get<1>(next_evict);
+		string next_evict_key = get<1>(next_evict);
+		cout << "evicting '" << next_evict_key << "'\n";
+		this->remove(next_evict_key);
+		return next_evict;
 	}
 
 	void add(uint32_t elt_size, string key) {
@@ -62,6 +66,17 @@ public:
 
 
 
+// These funcs are necessary bc mandatory interface overwrites
+//		``get" func required for tuple element access
+string get_tuple_key(tuple<uint32_t, string> node) {
+	return get<1>(node);
+}
+
+uint32_t get_tuple_size(tuple<uint32_t, string> node) {
+	return get<0>(node);
+}
+
+
 struct Cache::Impl {
 
 
@@ -97,11 +112,12 @@ struct Cache::Impl {
 			Lru_.remove(key);
 		} else if(memused_ >= maxmem_) {
 			// get next_evict
-			string next_evict = Lru_();
+			tuple<uint32_t, string> next_evict = Lru_();
+			string next_evict_key = get_tuple_key(next_evict);
+			uint32_t next_evict_size = get_tuple_size(next_evict);
 			// update memused
-			memused_ -= Lru_.getsize(next_evict);
-			Lru_.remove(next_evict);
-			hashtable_.erase(next_evict);
+			memused_ -= next_evict_size;
+			hashtable_.erase(next_evict_key);
 		}
 		void* newval = new char[size];
 		memcpy(newval, val, size);
