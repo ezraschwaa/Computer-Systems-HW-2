@@ -1,3 +1,5 @@
+// By Joe Meyer
+
 #include "cache_lru.cc"
 
 using namespace std;
@@ -33,10 +35,6 @@ void del_test(Cache* c, Cache::key_type key) {
 	c->del(key);
 }
 
-// simple/stupid custom hasher
-int hasher(string) {
-	return 0;
-}
 
 // this is a functor
 class betterHasher {
