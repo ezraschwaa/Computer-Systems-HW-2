@@ -1,3 +1,5 @@
+// by Joe Meyer
+
 #include <stdio.h>
 #include <string.h>
 #include "cache.hh"
@@ -16,7 +18,7 @@ private:
 	vector<tuple<uint32_t, string> > eviction_queue_;
 	// eviction_queue_ holds nodes of form (val-size, key)
 public:
-	// returns next key to evict
+	// returns next key to evict, also removes it from ev. q
 	tuple<uint32_t,string> operator()() {
 		tuple<uint32_t,string> next_evict;
 		// LruEvictor() is never called on an empty eviction_queue
@@ -28,6 +30,7 @@ public:
 		return next_evict;
 	}
 
+	// add an element to eviction queue
 	void add(uint32_t elt_size, string key) {
 		uint32_t evq_size = this->eviction_queue_.size();
 		tuple<uint32_t, string> node = make_tuple(elt_size, key);
@@ -43,12 +46,13 @@ public:
 		}
 	}
 
-
+	// remove an item from ev. q.
 	void remove(string key) {
 		// erase-remove_if idiom
 		this->eviction_queue_.erase(std::remove_if(this->eviction_queue_.begin(), this->eviction_queue_.end(), [key](tuple<uint32_t, string> node){return get<1>(node)==key;}), this->eviction_queue_.end());
 	}
 
+	// get size key's val
 	uint32_t getsize(string key) {
 		uint32_t i = 0;
 		for(;i<this->eviction_queue_.size(); i++) {
