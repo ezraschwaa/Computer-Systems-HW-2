@@ -52,7 +52,7 @@ public:
 		this->eviction_queue_.erase(std::remove_if(this->eviction_queue_.begin(), this->eviction_queue_.end(), [key](tuple<uint32_t, string> node){return get<1>(node)==key;}), this->eviction_queue_.end());
 	}
 
-	// get size key's val
+	// get size of key's val
 	uint32_t getsize(string key) {
 		uint32_t i = 0;
 		for(;i<this->eviction_queue_.size(); i++) {
@@ -117,7 +117,6 @@ struct Cache::Impl {
 			tuple<uint32_t, string> next_evict = Lru_();
 			string next_evict_key = get_tuple_key(next_evict);
 			uint32_t next_evict_size = get_tuple_size(next_evict);
-			// update memused
 			memused_ -= next_evict_size;
 			hashtable_.erase(next_evict_key);
 		}
@@ -128,7 +127,7 @@ struct Cache::Impl {
 		Lru_.add(size, key);
 	}
 
-
+	// returns cache[key]
 	val_type get(key_type key, index_type& val_size) const {
 		if(hashtable_.find(key)!=hashtable_.end()) {
 			return hashtable_.find(key)->second;
@@ -139,6 +138,7 @@ struct Cache::Impl {
 		}
 	}
 
+	// removes key:val from cache
 	void del(key_type key) {
 		if(hashtable_.find(key)!=hashtable_.end()) {
 			free(hashtable_[key]);
@@ -150,6 +150,7 @@ struct Cache::Impl {
 		}
 	}
 
+	// returns num of bytes used by cached values
 	index_type space_used() const {
 		return memused_;
 	}
