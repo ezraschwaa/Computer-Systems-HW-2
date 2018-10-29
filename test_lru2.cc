@@ -49,68 +49,101 @@ void test_hasher() {
 
 }
 
-void test_set_insert(Cache* c) {
+
+// insert 2 items into cache, query them, assert both values unchanged
+void test_set_insert() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+	x = 3
+	set_test(myCache, 'key1', &x, size)
 
 }
 
 
-void test_set_insert_full(Cache* c) {
-
+// fill cache, do insert and query it
+void test_set_insert_full() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 
-void test_set_overwrite(Cache* c) {
-
+// set element, overwrite it with different size, query it
+void test_set_overwrite() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 
-void test_evictor_fifo(Cache* c) {
-
+void test_evictor_fifo() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 
-void test_evictor_lru(Cache* c) {
-
+void test_evictor_lru() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 
-void test_get_present(Cache* c) {
-
+void test_get_present() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 
-void test_get_absent(Cache* c) {
-
+void test_get_absent() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 
-void test_get_deleted(Cache* c) {
-
+void test_get_deleted() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 
-void test_delete_present(Cache* c) {
-
+void test_delete_present() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 
-void test_delete_absent(Cache* c) {
-	
+void test_delete_absent() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 
-void test_space_used(Cache* c) {
-
+void test_space_used() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 // insert element, check space used
-void test_space_used_insert(Cache* c) {
-
+void test_space_used_insert() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 // insert element, check space used, delete it, check again
-void test_space_used_delete(Cache* c) {
-
+void test_space_used_delete() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
 
