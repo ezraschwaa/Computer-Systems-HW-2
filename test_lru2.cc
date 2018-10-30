@@ -173,7 +173,7 @@ void test_delete_present() {
 	Cache::index_type val_size = sizeof(uint32_t);
 	myCache->set(key, &val, val_size);
 	myCache->del(key);
-	assert(myCache->space_used() == 0 && "Should return a null pointer since key was deleted.");
+	assert(myCache->space_used() == 0 && "Space should be empty since key was deleted.");
 }
 
 
