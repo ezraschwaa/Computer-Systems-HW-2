@@ -89,8 +89,8 @@ void test_set_insert() {
 	set_test(myCache, "key1", &first_val, size);
 	set_test(myCache, "key2", &second_val, size+1);
 	// query items and assert values correct
-	assert(get_test(myCache, "key1", size) == 1);
-	assert(get_test(myCache, "key2", bigsize) == 2);
+	assert(get_test(myCache, "key1", size) == 1 && "'key1' value is wrong");
+	assert(get_test(myCache, "key2", bigsize) == 2 && "'key2' value is wrong");
 
 
 }
