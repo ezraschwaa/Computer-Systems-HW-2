@@ -187,8 +187,10 @@ void test_delete_absent() {
 
 	Cache::key_type key = "key";
 	uint32_t val_size = sizeof(uint32_t);
+
+	Cache::index_type space_used = myCache->space_used();
 	myCache->del(key);
-	//assert() assert what?
+	assert(space_used == myCache->space_used() && "Deleting an absent key doesn't impact the Cache.");
 }
 
 
@@ -199,6 +201,8 @@ void test_space_used() {
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 
+	Cache::index_type space_used = myCache->space_used();
+	assert(space_used == 0 && "Cache should initially be empty");
 }
 
 // insert element, check space used
@@ -243,6 +247,10 @@ int main(){
 
 	cout << "Running test_delete_absent() \t"; 
 	test_delete_absent();
+	cout << "PASS" << endl;
+
+	cout << "Running test_space_used() \t\t"; 
+	test_space_used();
 	cout << "PASS" << endl;
 
 	cout << "Running test_space_used_insert() \t"; 
