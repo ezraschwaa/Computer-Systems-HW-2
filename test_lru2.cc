@@ -170,11 +170,10 @@ void test_delete_present() {
 
 	int val = 42;
 	Cache::key_type key = "key";
-	// uint32_t val_size = sizeof(uint32_t);
 	Cache::index_type val_size = sizeof(uint32_t);
 	myCache->set(key, &val, val_size);
 	myCache->del(key);
-	// assert(get(key,val_size) == nullptr && "Should return a null pointer since key was deleted.");
+	assert(myCache->space_used() == 0 && "Should return a null pointer since key was deleted.");
 }
 
 
@@ -240,10 +239,10 @@ void test_space_used_delete() {
 
 
 int main(){
-	//issue with get? can you look at it?
-	// cout << "Running test_delete_present() \t"; 
-	// test_delete_present();
-	// cout << "PASS" << endl;
+
+	cout << "Running test_delete_present() \t\t"; 
+	test_delete_present();
+	cout << "PASS" << endl;
 
 	cout << "Running test_delete_absent() \t"; 
 	test_delete_absent();
