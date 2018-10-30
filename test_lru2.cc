@@ -167,6 +167,14 @@ void test_delete_present() {
 	uint32_t bound = 2;
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+
+	int val = 42;
+	Cache::key_type key = "key";
+	// uint32_t val_size = sizeof(uint32_t);
+	Cache::index_type val_size = sizeof(uint32_t);
+	myCache->set(key, &val, val_size);
+	myCache->del(key);
+	// assert(get(key,val_size) == nullptr && "Should return a null pointer since key was deleted.");
 }
 
 
@@ -176,6 +184,11 @@ void test_delete_absent() {
 	uint32_t bound = 2;
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+
+	Cache::key_type key = "key";
+	uint32_t val_size = sizeof(uint32_t);
+	myCache->del(key);
+	//assert() assert what?
 }
 
 
@@ -185,6 +198,7 @@ void test_space_used() {
 	uint32_t bound = 2;
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+
 }
 
 // insert element, check space used
@@ -194,6 +208,13 @@ void test_space_used_insert() {
 	uint32_t bound = 2;
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+
+	int val = 42;
+	Cache::key_type key = "key";
+	uint32_t val_size = sizeof(uint32_t);
+	myCache->set(key, &val, val_size);
+	Cache::index_type space_used = myCache->space_used();
+	assert(space_used == val_size && "Space used should be the size.");
 }
 
 // insert element, check space used, delete it, check again
@@ -203,6 +224,34 @@ void test_space_used_delete() {
 	uint32_t bound = 2;
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+
+	int val = 42;
+	Cache::key_type key = "key";
+	uint32_t val_size = sizeof(uint32_t);
+	myCache->set(key, &val, val_size);
+	myCache->del(key);
+	Cache::index_type space_used = myCache->space_used();
+	assert(space_used == 0 && "Space used should empty now that we've deleted the only element.");
+}
+
+
+int main(){
+	//issue with get? can you look at it?
+	// cout << "Running test_delete_present() \t"; 
+	// test_delete_present();
+	// cout << "PASS" << endl;
+
+	cout << "Running test_delete_absent() \t"; 
+	test_delete_absent();
+	cout << "PASS" << endl;
+
+	cout << "Running test_space_used_insert() \t"; 
+	test_space_used_insert();
+	cout << "PASS" << endl;
+
+	cout << "Running test_space_used_delete() \t"; 
+	test_space_used_delete();
+	cout << "PASS" << endl;
 }
 
 
@@ -210,10 +259,7 @@ void test_space_used_delete() {
 
 
 
-
-
-
-int main() {
+// int main() {
 	/*
 	// initialize Cache obj 'cache_length'
 	uint32_t cache_length = 2;
@@ -319,5 +365,5 @@ int main() {
 	free(myCache);
 	*/
 
-}
+// }
 
