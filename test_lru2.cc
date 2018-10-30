@@ -4,151 +4,6 @@
 
 using namespace std;
 
-Cache::index_type space_used_test(Cache* c) {
-	Cache::index_type used_space = c->space_used();
-	cout << "space used: " << used_space << "\n";
-	return used_space;
-}
-
-// sets Cache[key] = val
-void set_test(Cache* c, Cache::key_type key, int* val, Cache::index_type size) {
-	cout << "setting Cache['" << key << "'] = " << *val << "\n";
-	c->set(key, val, size);
-}
-
-
-// prints value at key
-void get_test(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
-	cout << "getting Cache['" << key << "']: ";
-	Cache::val_type value = c->get(key, val_size);
-	int* data_at_val = new int[1];
-	if(value!=nullptr) {
-		memcpy(data_at_val, value, val_size);
-		cout << *data_at_val << '\n';
-	}
-	free(data_at_val);
-}
-
-// deletes Cache[key]
-void del_test(Cache* c, Cache::key_type key) {
-	cout << "deleting Cache['" << key << "']\n";
-	c->del(key);
-}
-
-// ensure hash-values are consistent
-void test_hasher() {
-	uint32_t bound = 2
-	betterHasher myHasher = betterHasher(bound);
-
-	uint32_t keyhash = myHasher("key");
-	uint32_t ckey3hash = myHasher("ckey3");
-	uint32_t newkeyhash = myHasher("key");
-	uint32_t newckey3hash = myHasher("ckey3");
-	assert(newkeyhash==keyhash);
-	assert(newckey3hash==ckey3hash);
-
-}
-
-
-// insert 2 items into cache, query them, assert both values unchanged
-void test_set_insert() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-	x = 3
-	set_test(myCache, 'key1', &x, size)
-
-}
-
-
-// fill cache, do insert and query it
-void test_set_insert_full() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-
-// set element, overwrite it with different size, query it
-void test_set_overwrite() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-
-void test_evictor_fifo() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-
-void test_evictor_lru() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-
-void test_get_present() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-
-void test_get_absent() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-
-void test_get_deleted() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-
-void test_delete_present() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-
-void test_delete_absent() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-
-void test_space_used() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-// insert element, check space used
-void test_space_used_insert() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-// insert element, check space used, delete it, check again
-void test_space_used_delete() {
-	uint32_t cache_length = 2;
-	uint32_t size = sizeof(uint32_t);
-	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
-}
-
-
-
-
 
 // this is a functor
 class betterHasher {
@@ -170,8 +25,196 @@ betterHasher::betterHasher(int bound) {
 
 
 
+Cache::index_type space_used_test(Cache* c) {
+	Cache::index_type used_space = c->space_used();
+	cout << "space used: " << used_space << "\n";
+	return used_space;
+}
+
+// sets Cache[key] = val
+void set_test(Cache* c, Cache::key_type key, uint32_t* val, Cache::index_type size) {
+	cout << "setting Cache['" << key << "'] = " << *val << "\n";
+	c->set(key, val, size);
+}
+
+
+// prints/returns value at key
+int get_test(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
+	cout << "getting Cache['" << key << "']: ";
+	Cache::val_type value = c->get(key, val_size);
+	int* data_at_val = new int[1];
+	// data is hard copy (int) of int* data_at_val
+	int data;
+	if(value!=nullptr) {
+		memcpy(data_at_val, value, val_size);
+		data = *data_at_val;
+		cout << data << '\n';
+	}
+	free(data_at_val);
+	return data;
+}
+
+// deletes Cache[key]
+void del_test(Cache* c, Cache::key_type key) {
+	cout << "deleting Cache['" << key << "']\n";
+	c->del(key);
+}
+
+// ensure hash-values are consistent
+void test_hasher() {
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+
+	uint32_t keyhash = myHasher("key");
+	uint32_t ckey3hash = myHasher("ckey3");
+	uint32_t newkeyhash = myHasher("key");
+	uint32_t newckey3hash = myHasher("ckey3");
+	assert(newkeyhash==keyhash);
+	assert(newckey3hash==ckey3hash);
+
+}
+
+
+// insert 2 dif-sized items into cache, query them, assert both values unchanged
+void test_set_insert() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bigsize = size+1;
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+	uint32_t first_val = 1;
+	uint32_t second_val = 2;
+	// insert items
+	set_test(myCache, "key1", &first_val, size);
+	set_test(myCache, "key2", &second_val, size+1);
+	// query items and assert values correct
+	assert(get_test(myCache, "key1", size) == 1);
+	assert(get_test(myCache, "key2", bigsize) == 2);
+
+
+}
+
+
+// fill cache, do insert and query it
+void test_set_insert_full() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+
+// set element, overwrite it with different size, query it
+void test_set_overwrite() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+
+void test_evictor_fifo() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+
+void test_evictor_lru() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+
+void test_get_present() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+
+void test_get_absent() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+
+void test_get_deleted() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+
+void test_delete_present() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+
+void test_delete_absent() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+
+void test_space_used() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+// insert element, check space used
+void test_space_used_insert() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+// insert element, check space used, delete it, check again
+void test_space_used_delete() {
+	uint32_t cache_length = 2;
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+}
+
+
+
+
+
+
+
+
 
 int main() {
+	/*
 	// initialize Cache obj 'cache_length'
 	uint32_t cache_length = 2;
 
@@ -274,6 +317,7 @@ int main() {
 	get_test(myCache, "ckey3", size);
 
 	free(myCache);
+	*/
 
 }
 
