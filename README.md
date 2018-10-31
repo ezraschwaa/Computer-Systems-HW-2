@@ -6,7 +6,7 @@ https://docs.google.com/spreadsheets/d/1SGC-DK_hKgTCKbOK3QXLqUpMrs5UVX2u7eCNvrbw
 
 (Only Reed College email addresses can view, email ezraschwartz@reed.edu if you have issues opening)
 
-Henry's Code:
+#Henry's Code:
 
 When we initially run our tests on this code, we get an error:
   "cache.cpp:1:10: fatal error: cache.h: No such file or directory
@@ -30,6 +30,12 @@ When I change this code to say "#include "cache.h" instead of "#include <cache.h
   "collect2: error: ld returned 1 exit status"
 
 Thus there appears to be at least two issues, one in the format of cache.h importation and one linker error. There also appears to be an error where a function returning a non-void value does not return any value. I cannot say anything beyond this because it doesn't compile.
+
+#Kathy's Code:
+
+As you can see from the table, their code passed all of the tests.  All we had to adjust when testing their code was that we included cstring and assert.  Also, they sent a message that we had to delete their main in their cache.cc, which when we did allowed for the test results.
+
+#Sam Zofkie's Code:
 
 
 
