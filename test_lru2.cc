@@ -24,20 +24,6 @@ betterHasher::betterHasher(int bound) {
 }
 
 
-
-Cache::index_type space_used_test(Cache* c) {
-	Cache::index_type used_space = c->space_used();
-	cout << "space used: " << used_space << "\n";
-	return used_space;
-}
-
-// sets Cache[key] = val
-void set_test(Cache* c, Cache::key_type key, uint32_t* val, Cache::index_type size) {
-	cout << "setting Cache['" << key << "'] = " << *val << "\n";
-	c->set(key, val, size);
-}
-
-
 // prints/returns value at key
 int get_interface(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
 	cout << "getting Cache['" << key << "']: ";
@@ -52,12 +38,6 @@ int get_interface(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
 	}
 	free(data_at_val);
 	return data;
-}
-
-// deletes Cache[key]
-void del_test(Cache* c, Cache::key_type key) {
-	cout << "deleting Cache['" << key << "']\n";
-	c->del(key);
 }
 
 // ensure hash-values are consistent
