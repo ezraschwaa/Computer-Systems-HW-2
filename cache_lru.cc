@@ -130,6 +130,9 @@ struct Cache::Impl {
 	// returns cache[key]
 	val_type get(key_type key, index_type& val_size) const {
 		if(hashtable_.find(key)!=hashtable_.end()) {
+			//update evictor queue position
+			Lru_.remove(key);
+			Lru_.add(val_size, key);
 			return hashtable_.find(key)->second;
 
 		} else {
