@@ -39,7 +39,7 @@ void set_test(Cache* c, Cache::key_type key, uint32_t* val, Cache::index_type si
 
 
 // prints/returns value at key
-int get_test(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
+int get_interface(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
 	cout << "getting Cache['" << key << "']: ";
 	Cache::val_type value = c->get(key, val_size);
 	int* data_at_val = new int[1];
@@ -89,8 +89,8 @@ void test_set_insert() {
 	set_test(myCache, "key1", &first_val, size);
 	set_test(myCache, "key2", &second_val, size+1);
 	// query items and assert values correct
-	assert(get_test(myCache, "key1", size) == 1 && "'key1' value is wrong");
-	assert(get_test(myCache, "key2", bigsize) == 2 && "'key2' value is wrong");
+	assert(get_interface(myCache, "key1", size) == 1 && "'key1' value is wrong");
+	assert(get_interface(myCache, "key2", bigsize) == 2 && "'key2' value is wrong");
 
 
 }
@@ -295,7 +295,7 @@ int main(){
 	set_test(myCache, "key", &x, size);
 	assert(space_used_test(myCache)==size && "space used after 1 insert should be 4 bytes");
 	// get present element
-	get_test(myCache, "key", size);
+	get_interface(myCache, "key", size);
 	assert(space_used_test(myCache)==size && "'get' should not affect space used");
 	cout << '\n';
 
@@ -303,23 +303,23 @@ int main(){
 	x = 16;
 	set_test(myCache, "key", &x, size);
 	// see if it overwrote
-	get_test(myCache, "key", size);
+	get_interface(myCache, "key", size);
 	//size should still be 1
 	assert(space_used_test(myCache)==size && "overwrite should not affect space used");
 	cout << '\n';
 
 	//test get/del an absent element
-	get_test(myCache, "keyAbsent", size);
+	get_interface(myCache, "keyAbsent", size);
 	del_test(myCache, "keyAbsent");
 	assert(space_used_test(myCache)==size && "del.ing absent el. should not affect space used");
 
 	cout << '\n';
 	//test del present element
-	get_test(myCache, "key", size);
+	get_interface(myCache, "key", size);
 	del_test(myCache, "key");
 	//see if del worked
 	assert(space_used_test(myCache)==0 && "del.ing present el. should decrement space used");
-	get_test(myCache, "key", size);
+	get_interface(myCache, "key", size);
 	
 
 	//test evict (add 3 el.s, check that 1 gets evicted) [all same size => tests FIFO-evict]
@@ -336,9 +336,9 @@ int main(){
 	assert(space_used_test(myCache)==2*size && "Should add 3, evict 1");
 	cout << '\n';
 
-	get_test(myCache, "key", size);
-	get_test(myCache, "key1", size);
-	get_test(myCache, "key2", size);
+	get_interface(myCache, "key", size);
+	get_interface(myCache, "key1", size);
+	get_interface(myCache, "key2", size);
 	cout << '\n';
 	del_test(myCache, "key1");
 	del_test(myCache, "key2");	
@@ -365,9 +365,9 @@ int main(){
 	assert(space_used_test(myCache)==(size + (size + 3)) && "Should add 3, evict 1, overwrite 1");
 	cout << '\n';
 
-	get_test(myCache, "ckey1", size);
-	get_test(myCache, "ckey2", size);
-	get_test(myCache, "ckey3", size);
+	get_interface(myCache, "ckey1", size);
+	get_interface(myCache, "ckey2", size);
+	get_interface(myCache, "ckey3", size);
 
 	free(myCache);
 	*/
