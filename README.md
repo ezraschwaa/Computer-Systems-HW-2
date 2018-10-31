@@ -37,7 +37,7 @@ As you can see from the table, their code passed all of the tests.  All we had t
 
 #Sam Zofkie's Code:
 
-
+We did not find any errors in Sam's code. All our tests passed. None of them failed. test_set_insert() did not fail. Neither did test_set_overwrite. Test_hasher() didn't fail either. test_space_used() failed very little, in fact not at all. Not even test-delete-absent failed. In fact, pick any small number - the number of tests that failed is less than that. So small is the number of tests that failed, that if each failed test were the size of a skyscraper you would still not be able to see any test failures.
 
 
 
