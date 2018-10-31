@@ -141,6 +141,13 @@ void test_get_present() {
 	uint32_t bound = 2;
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+
+	uint32_t val = 42;
+	Cache::key_type key = "key";
+	Cache::index_type val_size = sizeof(uint32_t);
+	myCache->set(key, &val, val_size);
+	int32_t get_data = get_interface(myCache, key, val_size);
+	assert(get_data == 42 && "did not get correct variable.");
 }
 
 //checks that using get on an absent item returns a nullptr
@@ -267,6 +274,10 @@ int main(){
 
 	cout << "Running test_set_overwrite_dif_size() \t"; 
 	test_set_overwrite_dif_size();
+	cout << "PASS" << endl;
+
+	cout << "Running test_get_present() \t\t";
+	test_get_present();
 	cout << "PASS" << endl;
 
 	cout << "Running test_get_absent() \t\t";
