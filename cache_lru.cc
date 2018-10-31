@@ -130,13 +130,8 @@ struct Cache::Impl {
 	// returns cache[key]
 	val_type get(key_type key, index_type& val_size) const {
 		if(hashtable_.find(key)!=hashtable_.end()) {
-			//update evictor queue position
-			Lru_.remove(key);
-			Lru_.add(val_size, key);
 			return hashtable_.find(key)->second;
-
 		} else {
-			cout << "key '" << key << "' is absent\n";
 			return nullptr;
 		}
 	}
@@ -148,8 +143,6 @@ struct Cache::Impl {
 			hashtable_.erase(key);
 			memused_ -= Lru_.getsize(key);
 			Lru_.remove(key);
-		} else {
-			cout << "key '" << key << "' is already absent\n";
 		}
 	}
 

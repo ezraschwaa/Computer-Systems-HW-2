@@ -26,7 +26,6 @@ betterHasher::betterHasher(int bound) {
 
 // prints/returns value at key
 int get_interface(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
-	cout << "getting Cache['" << key << "']: ";
 	Cache::val_type value = c->get(key, val_size);
 	int* data_at_val = new int[1];
 	// data is hard copy (int) of int* data_at_val
@@ -34,7 +33,6 @@ int get_interface(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
 	if(value!=nullptr) {
 		memcpy(data_at_val, value, val_size);
 		data = *data_at_val;
-		cout << data << '\n';
 	}
 	free(data_at_val);
 	return data;
@@ -55,26 +53,22 @@ void test_hasher() {
 }
 
 
-// insert 2 dif-sized items into cache, query them, assert both values unchanged
+// insert item into cache, query it, assert both value is unchanged
 void test_set_insert() {
 	uint32_t cache_length = 2;
 	uint32_t size = sizeof(uint32_t);
-	uint32_t bigsize = size+1;
 	uint32_t bound = 2;
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 	uint32_t first_val = 1;
-	uint32_t second_val = 2;
-	// insert items
-	set_test(myCache, "key1", &first_val, size);
-	set_test(myCache, "key2", &second_val, size+1);
-	// query items and assert values correct
-	assert(get_interface(myCache, "key1", size) == 1 && "'key1' value is wrong");
-	assert(get_interface(myCache, "key2", bigsize) == 2 && "'key2' value is wrong");
+	Cache::key_type key = "key";
 
+	// insert item
+	myCache->set(key, &first_val, size);
 
+	// query item and assert value is correct
+	assert(get_interface(myCache, "key", size) == 1 && "'key' value is wrong");
 }
-
 
 // fill cache, do insert and query it
 void test_set_insert_full() {
@@ -84,7 +78,6 @@ void test_set_insert_full() {
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
-
 
 // set element, overwrite it with different size, query it
 void test_set_overwrite() {
@@ -219,12 +212,15 @@ void test_space_used_delete() {
 
 
 int main(){
+	cout << "Running test_set_insert() \t\t"; 
+	test_set_insert();
+	cout << "PASS" << endl;
 
 	cout << "Running test_delete_present() \t\t"; 
 	test_delete_present();
 	cout << "PASS" << endl;
 
-	cout << "Running test_delete_absent() \t"; 
+	cout << "Running test_delete_absent() \t\t"; 
 	test_delete_absent();
 	cout << "PASS" << endl;
 
