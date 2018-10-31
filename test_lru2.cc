@@ -86,16 +86,37 @@ void test_set_insert_full() {
 	assert(get_interface(myCache, "key3", size) == 3 && "set fails on full cache");
 }
 
-// set element, overwrite it with different size, query it
+// set element, overwrite it, query it
 void test_set_overwrite() {
 	uint32_t cache_length = 2;
 	uint32_t size = sizeof(uint32_t);
 	uint32_t bound = 2;
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+	uint32_t val = 1;
+	myCache->set("key", &val, size);
+	val = 2;
+	myCache->set("key", &val, size);
+	assert(get_interface(myCache, "key", size) == 2 && "overwrite fails");
 }
 
+// set element, overwrite it with different size, query it
+void test_set_overwrite_dif_size() {
+	uint32_t cache_length = 2;
+	uint16_t small_size = sizeof(uint16_t);
+	uint32_t size = sizeof(uint32_t);
+	uint32_t bound = 2;
+	betterHasher myHasher = betterHasher(bound);
+	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+	uint16_t small_value = 1;
+	myCache->set("key", &small_value, small_size);
+	uint32_t val = 2;
+	myCache->set("key", &val, size);
+	assert(get_interface(myCache, "key", size) == 2 && "overwriting w diff size fails");
 
+}
+
+// test that evictor uses first in first out policy
 void test_evictor_fifo() {
 	uint32_t cache_length = 2;
 	uint32_t size = sizeof(uint32_t);
@@ -104,7 +125,7 @@ void test_evictor_fifo() {
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
-
+// tests the evictor takes out last item
 void test_evictor_lru() {
 	uint32_t cache_length = 2;
 	uint32_t size = sizeof(uint32_t);
@@ -113,7 +134,7 @@ void test_evictor_lru() {
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
-
+// checks if get return the correct item
 void test_get_present() {
 	uint32_t cache_length = 2;
 	uint32_t size = sizeof(uint32_t);
@@ -122,7 +143,7 @@ void test_get_present() {
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 }
 
-
+//checks that using get on an absent item returns a nullptr
 void test_get_absent() {
 	uint32_t cache_length = 2;
 	uint32_t size = sizeof(uint32_t);
@@ -136,7 +157,7 @@ void test_get_absent() {
 	assert(get_data == -1 && "Getting an absent variable should return nullptr");
 }
 
-
+//checks that using get on a deleted item returns a nullptr
 void test_get_deleted() {
 	uint32_t cache_length = 2;
 	uint32_t size = sizeof(uint32_t);
@@ -153,7 +174,7 @@ void test_get_deleted() {
 	assert(get_data == -1 && "Getting a deleted variable should return nullptr");
 }
 
-
+//checks that delete works
 void test_delete_present() {
 	uint32_t cache_length = 2;
 	uint32_t size = sizeof(uint32_t);
@@ -169,6 +190,7 @@ void test_delete_present() {
 	assert(myCache->space_used() == 0 && "Space should be empty since key was deleted.");
 }
 
+//checks that we don't crash when we delete something absent
 void test_delete_absent() {
 	uint32_t cache_length = 2;
 	uint32_t size = sizeof(uint32_t);
@@ -184,6 +206,7 @@ void test_delete_absent() {
 	assert(space_used == myCache->space_used() && "Deleting an absent key doesn't impact the Cache.");
 }
 
+//checks that initial space used is 0.
 void test_space_used() {
 	uint32_t cache_length = 2;
 	uint32_t size = sizeof(uint32_t);
@@ -236,6 +259,14 @@ int main(){
 
 	cout << "Running test_set_insert_full() \t\t"; 
 	test_set_insert_full();
+	cout << "PASS" << endl;
+
+	cout << "Running test_set_overwrite() \t\t"; 
+	test_set_overwrite();
+	cout << "PASS" << endl;
+
+	cout << "Running test_set_overwrite_dif_size() \t"; 
+	test_set_overwrite_dif_size();
 	cout << "PASS" << endl;
 
 	cout << "Running test_get_absent() \t\t";
