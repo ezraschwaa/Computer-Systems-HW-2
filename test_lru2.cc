@@ -9,27 +9,27 @@ using namespace std;
 class betterHasher {
 private:
 	hash<string> hasher_;
-	int bound_;
+	uint32_t bound_;
 
 public:
-	// hashes key to int in range(0, bound)
+	// hashes key to uint32_t in range(0, bound)
 	uint32_t operator()(string key) {
 		return this->hasher_(key)%this->bound_;
 	}
-	betterHasher(int bound);
+	betterHasher(uint32_t bound);
 };
 
-betterHasher::betterHasher(int bound) {
+betterHasher::betterHasher(uint32_t bound) {
 	this->bound_ = bound;
 }
 
 
 // prints/returns value at key
-int get_interface(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
+uint32_t get_interface(Cache* c, Cache::key_type key, Cache::index_type& val_size) {
 	Cache::val_type value = c->get(key, val_size);
-	int* data_at_val = new int[1];
-	// data is hard copy (int) of int* data_at_val
-	int data;
+	uint32_t* data_at_val = new uint32_t[1];
+	// data is hard copy (uint32_t) of uint32_t* data_at_val
+	int32_t data = -1;
 	if(value!=nullptr) {
 		memcpy(data_at_val, value, val_size);
 		data = *data_at_val;
@@ -122,6 +122,11 @@ void test_get_absent() {
 	uint32_t bound = 2;
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+
+	Cache::key_type key = "key";
+	Cache::index_type val_size = sizeof(uint32_t);
+	int32_t get_data = get_interface(myCache, key, val_size);
+	assert(get_data == -1 && "Getting an absent variable should return nullptr");
 }
 
 
@@ -131,6 +136,14 @@ void test_get_deleted() {
 	uint32_t bound = 2;
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+
+	uint32_t val = 42;
+	Cache::key_type key = "key";
+	Cache::index_type val_size = sizeof(uint32_t);
+	myCache->set(key, &val, val_size);
+	myCache->del(key);
+	int32_t get_data = get_interface(myCache, key, val_size);
+	assert(get_data == -1 && "Getting a deleted variable should return nullptr");
 }
 
 
@@ -141,14 +154,13 @@ void test_delete_present() {
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 
-	int val = 42;
+	uint32_t val = 42;
 	Cache::key_type key = "key";
 	Cache::index_type val_size = sizeof(uint32_t);
 	myCache->set(key, &val, val_size);
 	myCache->del(key);
 	assert(myCache->space_used() == 0 && "Space should be empty since key was deleted.");
 }
-
 
 void test_delete_absent() {
 	uint32_t cache_length = 2;
@@ -164,7 +176,6 @@ void test_delete_absent() {
 	myCache->del(key);
 	assert(space_used == myCache->space_used() && "Deleting an absent key doesn't impact the Cache.");
 }
-
 
 void test_space_used() {
 	uint32_t cache_length = 2;
@@ -185,7 +196,7 @@ void test_space_used_insert() {
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 
-	int val = 42;
+	uint32_t val = 42;
 	Cache::key_type key = "key";
 	uint32_t val_size = sizeof(uint32_t);
 	myCache->set(key, &val, val_size);
@@ -201,7 +212,7 @@ void test_space_used_delete() {
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
 
-	int val = 42;
+	uint32_t val = 42;
 	Cache::key_type key = "key";
 	uint32_t val_size = sizeof(uint32_t);
 	myCache->set(key, &val, val_size);
@@ -214,6 +225,14 @@ void test_space_used_delete() {
 int main(){
 	cout << "Running test_set_insert() \t\t"; 
 	test_set_insert();
+	cout << "PASS" << endl;
+
+	cout << "Running test_get_absent() \t\t";
+	test_get_absent();
+	cout << "PASS" << endl;
+
+	cout << "Running test_get_deleted() \t\t"; 
+	test_get_deleted();
 	cout << "PASS" << endl;
 
 	cout << "Running test_delete_present() \t\t"; 
@@ -242,7 +261,7 @@ int main(){
 
 
 
-// int main() {
+// uint32_t main() {
 	/*
 	// initialize Cache obj 'cache_length'
 	uint32_t cache_length = 2;
@@ -267,7 +286,7 @@ int main(){
 	assert(space_used_test(myCache)==0 && "empty cache should have no elements");
 
 
-	int x = 21;
+	uint32_t x = 21;
 	set_test(myCache, "key", &x, size);
 	assert(space_used_test(myCache)==size && "space used after 1 insert should be 4 bytes");
 	// get present element
