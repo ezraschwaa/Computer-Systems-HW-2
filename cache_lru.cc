@@ -25,7 +25,6 @@ public:
 		assert(this->eviction_queue_.size()>0 && "nothing to evict\n");
 		next_evict = this->eviction_queue_[0];
 		string next_evict_key = get<1>(next_evict);
-		cout << "evicting '" << next_evict_key << "'\n";
 		this->remove(next_evict_key);
 		return next_evict;
 	}
@@ -108,7 +107,6 @@ struct Cache::Impl {
 		// if the key is already in the table...
 		if(hashtable_.find(key)!=hashtable_.end()) {
 			// remove it from queue (will overwrite it in cache/re-add it to queue later)
-			cout << "overwriting key: '" << key << "'\n";
 			free(hashtable_[key]);
 			memused_ -= Lru_.getsize(key);
 			Lru_.remove(key);

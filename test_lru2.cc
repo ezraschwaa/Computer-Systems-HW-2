@@ -77,6 +77,13 @@ void test_set_insert_full() {
 	uint32_t bound = 2;
 	betterHasher myHasher = betterHasher(bound);
 	Cache* myCache = new Cache(cache_length*size, [](){ return 0; }, myHasher);
+	uint32_t val = 1;
+	myCache->set("key1", &val, size);
+	val = 2;
+	myCache->set("key2", &val, size);
+	val = 3;
+	myCache->set("key3", &val, size);
+	assert(get_interface(myCache, "key3", size) == 3 && "set fails on full cache");
 }
 
 // set element, overwrite it with different size, query it
@@ -225,6 +232,10 @@ void test_space_used_delete() {
 int main(){
 	cout << "Running test_set_insert() \t\t"; 
 	test_set_insert();
+	cout << "PASS" << endl;
+
+	cout << "Running test_set_insert_full() \t\t"; 
+	test_set_insert_full();
 	cout << "PASS" << endl;
 
 	cout << "Running test_get_absent() \t\t";
